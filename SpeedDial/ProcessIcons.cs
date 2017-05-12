@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using SpeedDial.Properties;
+using System.Runtime.InteropServices;
 
 namespace SpeedDial
 {
     class ProcessIcons : IDisposable
     {
         NotifyIcon ni;
+        ContextMenu menu = new ContextMenu();
+        SettingsWindow s = new SettingsWindow();
 
         public ProcessIcons()
         {
@@ -23,15 +22,30 @@ namespace SpeedDial
             IntPtr ptr = bit.GetHicon();
             ni.Icon = Icon.FromHandle(ptr);
             ni.Text = "SpeedDial";
-            ni.MouseDoubleClick += Ni_MouseDoubleClick;
+            ni.MouseDoubleClick += OpenSettings;
+
+            menu.MenuItems.Add(new MenuItem("Quit", Quit));
+            menu.MenuItems.Add(new MenuItem("Key Binding Settings", OpenSettings));
+            ni.ContextMenu = menu;
         }
 
-        private void Ni_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void Quit(object sender, EventArgs e)
         {
-            Settings s = new Settings();
-            s.Show();
+            Dispose();
+            Environment.Exit(0);
         }
 
+        private void OpenSettings(object sender, EventArgs e)
+        {
+            ShowSettings();
+        }
+
+        private void ShowSettings()
+        {
+            if (!s.Visible) s.Show();
+        }
+
+        //Methods to implement IDisposable
         public void Display()
         {
             ni.Visible = true;

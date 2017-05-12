@@ -17,7 +17,6 @@ namespace SpeedDial
             using (ProcessIcons pi = new ProcessIcons())
             {
                 pi.Display();
-
                 Application.Run();
             }
 
